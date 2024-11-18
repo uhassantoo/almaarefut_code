@@ -1,0 +1,120 @@
+{% extends 'store/layout.html' %}
+{% load static %}
+{% load custom_filters %}
+
+
+{% block title %}{{ object.title | title }}{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'css/store/products.css' %}">
+<link rel="stylesheet" href="{% static 'css/store/basket.css' %}">
+{% endblock %}
+
+{% block body %}
+<article class="product">
+	<div class="card col-10 my-4 mt-5">
+		<div class="row g-4">
+			<!------------ Image -------------->
+			<div class="col-12 col-md-8">
+				<div class="product-images-grid">
+					{% if object.images.first.image %}
+						{% for image in object.images.all %}
+							<div class="product-img-item">
+								<img src="{{ image.image.url }}" alt="{{ image.alt_text }}" loading="lazy" decoding="async">
+							</div>
+						{% endfor %}
+					{% else %}
+						<div class="product-img-item"><img src="{% static 'store\imgs\products\No_image_available.png' %}" class="card-img-top" alt="no image found"></div>
+					{% endif %}
+				</div>
+			</div>
+
+			<!-------- Product Body ---------->
+			<div class="col-sm-12 col-md-4">
+				<div class="card-body d-flex flex-column gap-3">
+					<h2 class="card-title">{{ object.title | title }} </h2>
+					<div>
+						{% if object.discount_price %}
+						Rs. <del>{{ object.regular_price }}</del>
+						{{ object.discount_price }}
+						{% else %}
+						Rs. {{ object.regular_price }}
+						{% endif %}
+					</div>
+					{% if object.specification.first %}
+					<div>
+						{{ object.specification.all|group_attributes|safe }}
+					</div>
+					{% endif %}
+					<div class="card-text">
+						<button type="button" class="min-btn btn p-0">
+							<ion-icon name="remove-outline"></ion-icon>
+						</button>
+						<span class="quantity bg-white rounded-pill">1</span>
+						<button class="plus-btn btn p-0" type="button">
+							<ion-icon name="add-outline"></ion-icon>
+						</button>
+					</div>
+					<button class="col-12 btn btn-primary"
+						type="button" id="add-to-basket" data-index="{{  product.id }}">Throw to Basket</button>
+					<p class="col card-text mt-3">{{ object.description | linebreaksbr }}</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</article>
+{% endblock %}
+
+{% block script %}
+	<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+	<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+	<script>
+		// Quantity Change
+		$('.plus-btn').on('click', function (e) {
+			$('.quantity').text(parseInt($('.quantity').text()) + 1);
+		})
+		$('.min-btn').on('click', function (e) {
+			let quantity = parseInt($('.quantity').text());
+			if (quantity > 1) {
+				$('.quantity').text(quantity - 1);
+			}
+		})
+		// Add to Basket
+		$(document).on('click', '#add-to-basket', function (e) {
+			e.preventDefault();
+			$(this).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...');
+			$(this).prop('disabled', true);
+
+			var attribute_ids = []
+			$('input[type="radio"]:checked').each(function (index, element) {
+				// element == this
+				attribute_ids += $(element).val();
+
+				console.log(element.name)
+				console.log($(element).val());
+			});
+
+			var csrfToken = "{{ csrf_token }}";
+			$.ajax({
+				type: "POST",
+				url: "{% url 'basket:basket_update' %}",
+				data: {
+					productId: $('#add-to-basket').data('index'),
+					product_qty: parseInt($('.quantity').text()),
+					attribute_id: attribute_ids,
+					csrfmiddlewaretoken: csrfToken,
+					action: 'add'
+				},
+				success: function (response) {
+					$('.quantity').text(1);
+					$('.basket-qty').text(response.qty);
+					$('#add-to-basket').html('Throw to Basket').prop('disabled', false);
+				},
+				error: function (xhr, errmessage, err) {
+					$('#add-to-basket').html('Error: Try Again');
+				}
+			});
+		})
+	</script>
+{% endblock %}

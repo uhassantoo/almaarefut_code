@@ -1,0 +1,54 @@
+{% extends 'account/layout.html' %}
+
+{% block title %}Sign Up{% endblock %}
+
+{% block form_body %}
+	<h1 class="mb-4 text-center">Create an Account</h1>
+	<p class="mb-4 text-muted text-center">It's free and only takes a minute.</p>
+	<form action="" class="rounded mx-auto p-4 col-lg-10" method="post">
+		{% csrf_token %}
+
+		{% if form.errors %}
+		<p class="text-danger">Please correct the following errors:</p>
+		{% for field in form %}
+		{% if field.errors %}
+		<div class="alert alert-danger alert-dismissible fade show" role="alert">
+			{{ field.label }}: {{ field.errors | striptags }}
+			<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+		</div>
+		{% endif %}
+		{% endfor %}
+		{% endif %}
+
+		<!-- <label for="id_username">{{ form.username.label }}</label> -->
+		{{ form.username }}
+
+		<div class="row row-cols-1 row-cols-sm-2">
+			<div class="col">
+				<!-- <label for="id_first_name">{{ form.first_name.label }}</label> -->
+				{{ form.first_name }}
+			</div>
+			<div class="col">
+				<!-- <label for="id_last_name">{{ form.last_name.label }}</label> -->
+				{{ form.last_name }}
+			</div>
+		</div>
+
+		<!-- <label for="id_email">{{ form.email.label }}</label> -->
+		{{ form.email }}
+
+		<!-- <label for="id_password1">{{ form.password1.label }}</label> -->
+		{{ form.password1 }}
+		<small class="form-text text-secondary mb-4 small">{{ form.password1.help_text }}</small>
+
+		<!-- <label for="id_password2">{{ form.password2.label }}</label> -->
+		{{ form.password2 }}
+		<span class="form-text text-secondary small">{{ form.password2.help_text }}</span>
+
+		<button type="submit" class="btn btn-continue">Register</button>
+		<a href="{% url 'account:login' %}" class="btn btn-login">Already have an account?</a>
+	</form>
+
+{% endblock form_body %}
+
+{% block footer %}{% endblock footer %}

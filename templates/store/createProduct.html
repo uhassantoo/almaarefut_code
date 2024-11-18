@@ -1,0 +1,74 @@
+{% extends 'store/layout.html' %}
+{% load static %}
+
+{% block style %}
+	<link rel="stylesheet" href="{% static 'store/css/draganddrop.css' %}" type="text/css" />
+{% endblock %}
+
+{% block body %}
+	<div class="container-fluid">
+		<div class="d-flex align-items-center py-4 pb-5">
+			<div class="container">
+				<div class="row">
+					<div class="auth_form col-12 col-lg-8 mx-auto">
+						<form action="" enctype="multipart/form-data" class="rounded mx-auto p-4 col-lg-10" method="post">
+							{% csrf_token %}
+							<h3 class="mb-2">Add Product</h3>
+
+							{% if form.errors %}
+							<p class="text-danger">Please correct the following errors:</p>
+							{% for field in form %}
+							{% if field.errors %}
+							<div class="alert alert-danger alert-dismissible fade show" role="alert">
+								{{ field.label }}: {{ field.errors | striptags }}
+								<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+							</div>
+							{% endif %}
+							{% endfor %}
+							{% endif %}
+
+							<label for="">{{ form.title.label }} <span class="text-muted small">(Required)</span></label>
+							{{ form.title }}
+							<div class="row">
+								<div class="col">
+									<label for="">{{ form.price.label }} <span class="text-muted small">(Required)</span></label>
+									{{ form.price }}
+								</div>
+								<div class="col">
+									<label for="">{{ form.discount_price.label }} <span class="text-muted small">(Optional)</span></label>
+									{{ form.discount_price }}
+								</div>
+							</div>
+							<label for="">{{ form.description.label }}<span class="text-muted small ms-1">(Required)</span></label>
+							{{ form.description }}
+							<div class="row">
+								<div class="col">
+									<label for="">{{ form.category.label }} <span class="text-muted small">(Required)</span></label>
+									{{ form.category }}
+								</div>
+								<div class="col">
+									<label for="">{{ form.subcategory.label }} <span class="text-muted small">(Optional)</span></label>
+									{{ form.subcategory }}
+								</div>
+								<div class="col">
+									<label for="">{{ form.material.label }} <span class="text-muted small">(Required)</span></label>
+									{{ form.material }}
+								</div>
+							</div>
+							<div id="dropzone" class="form-group mb-3">
+								<label for="listing-image">Click to upload Images or Drag and Drop Here <span class="text-muted small"><br>(Select upto 5 images to upload)</span></label>
+								<input type="file" accept="image/" name="images" id="listing-image" multiple>
+							</div>
+							<div id="image-preview" class="col m-auto"></div> <!-- Container for displaying uploaded images -->
+							<input class="btn w-100" type="submit" value="Create">
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block script %}
+	<script src="{% static 'store/js/draganddrop.js' %}"></script>
+{% endblock %}

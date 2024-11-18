@@ -1,0 +1,44 @@
+{% extends 'account/layout.html' %}
+
+{% block title %}Edit Profile{% endblock %}
+
+{% block form_body %}
+	<form action="" class="rounded mx-auto p-4 col-lg-10" method="post">
+		{% csrf_token %}
+		<h1 class="mb-4">Edit your Profile</h1>
+		<!-- <p class="mb-4 text-muted">You can edit your profile your account using the following form:</p> -->
+		{% if form.is_valid %}
+			<div class="alert alert-success" role="alert">
+				Details successfully updated! <a href="{% url 'account:dashboard' %}" class="alert-link">Back to Dashboard</a>
+			</div>
+		{% endif %}
+
+		{% if form.errors %}
+			<p class="text-danger">Please correct the following errors:</p>
+			{% for field in form %}
+				{% if field.errors %}
+					<div class="alert alert-danger alert-dismissible fade show" role="alert">
+						{{ field.label }}: {{ field.errors | striptags }}
+						<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+					</div>
+				{% endif %}
+			{% endfor %}
+		{% endif %}
+
+		<label for="">{{ form.first_name.label }}</label>
+		{{ form.first_name }}
+		<label for="">{{ form.last_name.label }}</label>
+		{{ form.last_name }}
+		<label for="">{{ form.email.label }} <span class="text-secondary text-uppercase small">(Can not be edited)</span></label>
+		{{ form.email }}
+		<button type="submit" class="btn btn-continue">Save Changes</button>
+	</form>
+	<hr width="70%" class="m-auto">
+	<form action="{% url 'account:delete_user' %}" class="rounded mx-auto account-form p-4 col-lg-10 mt-2" method="post">
+		{% csrf_token %}
+		<h3 class="mb-2">Delete Your Account</h3>
+		<p class="mb-3 text-secondary">Are you sure you want to delete your account?</p>
+		
+		<input class="btn btn-danger w-100" type="submit" value="Delete">
+	</form>
+{% endblock form_body %}

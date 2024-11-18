@@ -1,0 +1,34 @@
+<html>
+<head><style>
+	h1
+	{
+		width: 100%;
+		padding: 20px;
+		background: wheat;
+		text-align: center;
+		font-size: 25px;
+	}
+	p + a
+	{
+		border: 5px wheat solid;
+		background: none;
+		padding: 10px;
+		border-radius: 30px;
+		text-decoration: none;
+		color: black;
+	}
+	p + a:hover
+	{
+		background: wheat;
+	}
+</style>
+<body>
+	{% autoescape off %}
+	<h1>Hi {{ user.username }}!</h1>
+	
+	<p>You are trying to login with unverified account: {{ user.email }}. Please click below link to verify so you can log in.</p>
+	<p>Thankyou!</p>
+	<a type="button" role="button" href="http://{{ domain }}{% url 'account:activate' uid64=uid token=token %}">Verify</a>
+	{% endautoescape %}
+</body>
+</html>

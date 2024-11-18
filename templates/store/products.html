@@ -1,0 +1,110 @@
+{% extends 'store/layout.html' %}
+{% load static %}
+
+{% block title %}
+	{{ heading | title }} 
+	{% if subheading %}
+		- {{ subheading | title }}
+	{% endif %}
+{% endblock title %}
+
+{% block style %}
+	<link rel="stylesheet" href="{% static 'css/store/products.css' %}">
+{% endblock style %}
+
+{% block body %}
+<div class="container-fluid px-md-5 mt-5 h-100">
+	<h1 class="text-center">
+		{{ heading | title }}
+		{% if subheading %}
+			- {{ subheading | title }}
+		{% endif %}
+	</h1>
+	<section class="products">
+		<div class="row place row-cols-1 {% if object_list|length > 0 %} row-cols-sm-2 row-cols-lg-3 row-cols-xxl-4 g-4 g-xl-5 {% endif %} mx-md-5 my-2">
+			{% for item in object_list %}
+				<div class="col">
+					<div class="card position-relative p-3">
+						<a href="{{ item.get_absolute_url }}" class="h-100 w-100">
+							<div class="d-flex flex-column justify-content-between h-100">
+								<div class="product-img-container">
+									{% if item.images.first.image %}
+										{% with image=item.images.first.image %}
+												<img src="{{ image.url }}" width="370" alt="{{ image.alt_text }}" >
+										{% endwith %}
+									{% else %}
+										No Image
+									{% endif %}
+								</div>
+								<div class="card-body">
+									<h3 class="card-title h5">{{ item.title | title }}</h3>
+									{% if item.discount_price %}
+										<span class="d-flex gap-2 justify-content-center"><del>Rs. {{ item.regular_price }}</del> Rs. {{ item.discount_price }}</span>
+									{% else %}
+										Rs. {{ item.regular_price }}
+									{% endif %}
+									<!-- <a href="{% url 'account:add-to-wishlist' item.slug %}" class="wishlist_icon position-absolute text-success bottom-0 end-0 translate-middle">
+										{% if item in wishlist_listings %}
+											<ion-icon name="heart"></ion-icon>
+										{% else %}
+											<ion-icon name="heart-outline"></ion-icon>
+										{% endif %}
+									</a> -->
+								</div>
+							<!-- <div class="position-absolute"></div> -->
+							</div>
+						</a>
+					</div>
+				</div>
+			{% empty %}
+			<h1 class="text-center">Coming Soon</h1>
+			{% endfor %}
+		</div>
+								<!-- PAGINATION START -->
+		{% if is_paginated %}
+			<nav aria-label="Page navigation example">
+				<ul class="pagination justify-content-center">
+					{% if page_obj.has_previous %}
+						<li class="page-item">
+							<a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+								<span aria-hidden="true">&laquo;</span>
+							</a>
+						</li>
+					{% else %}
+						<li class="page-item disabled">
+							<a class="page-link" aria-label="Previous">
+								<span aria-hidden="true">&laquo;</span>
+							</a>
+						</li>
+					{% endif %}
+					{% for i in page_obj.paginator.get_elided_page_range %}
+						{% if page_obj.paginator.ELLIPSIS == forloop.counter %}
+							<li class="page-item disabled"><a class="page-link" href="#">{{ forloop.counter }}</a></li>
+						{% else %}
+							{% if page_obj.number == forloop.counter %}
+								<li class="page-item active" aria-current="page"><a class="page-link" href="?page={{ forloop.counter }}">{{ forloop.counter }}</a></li>
+							{% else %}
+								<li class="page-item"><a class="page-link" href="?page={{ forloop.counter }}">{{ forloop.counter }}</a></li>
+							{% endif %}
+						{% endif %}
+					{% endfor %}
+					{% if page_obj.has_next %}
+						<li class="page-item">
+							<a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+								<span aria-hidden="true">&raquo;</span>
+							</a>
+						</li>
+					{% else %}
+						<li class="page-item disabled">
+							<a class="page-link" aria-label="Next">
+								<span aria-hidden="true">&raquo;</span>
+							</a>
+						</li>
+					{% endif %}
+				</ul>
+			</nav>
+		{% endif %}
+								<!-- PAGINATION END -->
+	</section>
+</div>
+{% endblock body %}

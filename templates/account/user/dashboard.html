@@ -1,0 +1,107 @@
+{% extends 'store/layout.html' %}
+{% load static %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block style %}
+	<link rel="stylesheet" href="{% static 'css/account/card.css' %}">
+{% endblock style %}
+
+{% block body %}
+	<div class="container dashboard py-4">
+		<div class="hstack gap-3">
+			<!-- <a href="{% url 'store:index' %}" class="link-body-emphasis text-decoration-none">
+				<img src="{% static 'store/imgs/icon/sanwal.svg' %}" alt="Logo" width="50" height="45">
+			</a> -->
+			<!-- <div class="col"> -->
+				<h1 class="h5 mb-0">Your Dashboard</h1>
+				<div class="vr"></div>
+				<div class="text-muted">Manage your orders and personal details</div>
+			<!-- </div> -->
+		</div>
+		<hr>
+		<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+			<div class="col">
+				<a href="{% url 'order:orders-history' %}" class="text-light text-decoration-none" role="button" style="max-width: 540px;">
+					<div class="card rounded-4 mb-3 shadow">
+						<div class="row g-0">
+							<div class="col-3 position-relative">
+								<div class="position-absolute top-50 start-50 translate-middle">
+									<ion-icon name="bag-check-outline" size="large"></ion-icon>
+								</div>
+							</div>
+							<div class="col-9">
+								<div class="card-body ps-0 ps-md-1">
+									<h1 class="h5">Orders</h1>
+									<p class="card-text small text-muted">View Track and Change or buy again</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</a>
+			</div>
+			<div class="col">
+				<a href="{% url 'account:edit_details' %}" class="text-light text-decoration-none" role="button" style="max-width: 540px;">
+					<div class="card rounded-4 mb-3  shadow">
+						<div class="row g-0">
+							<div class="col-3 position-relative">
+								<div class="position-absolute top-50 start-50 translate-middle">
+									<ion-icon name="key-outline" size="large"></ion-icon>
+								</div>
+							</div>
+							<div class="col-9">
+								<div class="card-body ps-0 ps-md-1">
+									<h1 class="h5">Login & Security</h1>
+									<p class="card-text small text-muted">Edit login, email and phone number</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</a>
+			</div>
+			<div class="col">
+				<a href="{% url 'address:addresses' %}" class="text-light text-decoration-none" role="button" style="max-width: 540px;">
+					<div class="card rounded-4 mb-3 shadow">
+						<div class="row g-0">
+							<div class="col-3 position-relative">
+								<div class="position-absolute top-50 start-50 translate-middle">
+									<ion-icon name="location-outline" size="large"></ion-icon>
+								</div>
+							</div>
+							<div class="col-9">
+								<div class="card-body ps-0 ps-md-1">
+									<h1 class="h5">Your Addresses</h1>
+									<p class="card-text small text-muted">Edit your shipping addresses</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</a>
+			</div>
+			<!-- <div class="col">
+				<a href="{% url 'account:wishlist' %}" class="text-light text-decoration-none" role="button" style="max-width: 540px;">
+					<div class="card rounded-4 mb-3">
+						<div class="row g-0">
+							<div class="col-3 position-relative">
+								<div class="position-absolute top-50 start-50 translate-middle">
+									<ion-icon name="bookmark-outline" size="large"></ion-icon>
+								</div>
+							</div>
+							<div class="col-9">
+								<div class="card-body ps-0 ps-md-1">
+									<h1 class="h5">Your Wishlist</h1>
+									<p class="card-text small text-muted">View your your wishlist</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</a>
+			</div> -->
+		</div>
+	</div>
+{% endblock %}
+
+{% block script %}
+	<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+	<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+{% endblock script %}

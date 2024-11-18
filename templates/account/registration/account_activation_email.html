@@ -1,0 +1,35 @@
+<html>
+<head><style>
+	h1
+	{
+		width: 100%;
+		padding: 20px;
+		background: wheat;
+		text-align: center;
+		font-size: 25px;
+	}
+	p + a
+	{
+		border: 5px wheat solid;
+		background: none;
+		padding: 10px;
+		border-radius: 30px;
+		text-decoration: none;
+		color: black;
+	}
+	p + a:hover
+	{
+		background: wheat;
+	}
+</style>
+<body>
+{% autoescape off %}
+<h1>Hi {{ user.username }}</h1>
+
+<p>Your account has been successfully created. Please click below link to activate your account</p>
+
+<a type="button" role="button" href="http://{{ domain }}{% url 'account:activate' uid64=uid token=token %}">Activate</a>
+
+{% endautoescape %}
+</body>
+</html>

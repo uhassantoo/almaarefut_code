@@ -1,0 +1,71 @@
+{% extends 'store/layout.html' %}
+{% load static %}
+
+{% block style %}
+	<style>
+		#text {
+			text-align: justify;
+		}
+		/* #text img {
+			opacity: 0.2;
+		} */
+		.container.about {
+			/* background-image: url("{% static 'store/imgs/about/background-old-greased-paper.webp' %}"); */
+			/* background-position: center; */
+			/* background-size: cover; */
+			width: fit-content;
+			height: 50rem;
+			background-repeat: no-repeat;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			flex-direction: column;
+		}
+		.container.about > .container {
+			width: 75%;
+		}
+		.container.about.mobile {
+			display: none;
+		}
+		
+
+		@media screen and (width <= 990px) {
+			.container.about {
+				background-size: contain;
+				background-clip: content-box;
+				height: 20rem;
+			}
+			.container.about > .container {
+				overflow: auto;
+				height: 13rem;
+				width: 100%;
+			}
+			.container.about.mobile {
+				display: flex;
+			}
+			.desktop {
+				display: none;
+			}
+		}
+	</style>
+{% endblock %}
+
+{% block body %}
+	<div class="container about m-auto py-3 mb-3 position-relative">
+		<!-- <span class="position-absolute top-50 start-50 translate-middle" id="text">
+			<img src="{% static 'store/imgs/icon/sanwal2.webp' %}" alt="Sanwal LOGO" class="position-absolute start-50 top-50 translate-middle" width="100%" height="100%">
+		</span> -->
+		<div class="container m-auto p-5" id="text">
+			<p>Sanwal, meaning tan skinned, alludes to the Balochi cameleers who would visit the outskirts of Punjab for trade. Wells being a site for public concomitance, they would often be encountered by coy farm girls who'd also have arrived there for filling their pitchers to eventually fall for the stout and sturdy cameleers. Khwaja Ghulam Farid popularized these folk events as symbols which serve for meanings much more elevated and transcendent than their immediate understanding. It is a tradition worth of attention and continuation, in memory as well as in action.</p>
+			<p class="desktop">Sanwal, the brand, on the other hand, is a trade agency seeking to take up a unique course of action: We collaborate with local artists and artisans with a mission to not only provide a platform to sell but also to create a community of people who can envision and collaborate, appreciate and enliven our heritage and values. Our world is becoming more and more monotonous as we delve into a global digital revolution. Since we are destined to become a part of it, with this name, Sanwal, we purport to remind ourselves of the beautiful literary culture that is withering under our custodianship, and of course, espouse to be a charming cameleer in the world of trade.</p>
+		</div>
+	</div>
+	<div class="container mobile about m-auto py-3 mb-3 position-relative">
+		<span class="position-absolute top-50 start-50 translate-middle" id="text">
+			<img src="{% static 'store/imgs/icon/sanwal2.webp' %}" alt="Sanwal LOGO" class="position-absolute start-50 top-50 translate-middle" width="100%" height="100%">
+		</span>
+		<div class="container m-auto w-md-75 p-5" id="text">
+			<p>Sanwal, the brand, on the other hand, is a trade agency seeking to take up a unique course of action: We collaborate with local artists and artisans with a mission to not only provide a platform to sell but also to create a community of people who can envision and collaborate, appreciate and enliven our heritage and values. Our world is becoming more and more monotonous as we delve into a global digital revolution. Since we are destined to become a part of it, with this name, Sanwal, we purport to remind ourselves of the beautiful literary culture that is withering under our custodianship, and of course, espouse to be a charming cameleer in the world of trade.</p>
+		</div>
+	</div>
+{% endblock %}

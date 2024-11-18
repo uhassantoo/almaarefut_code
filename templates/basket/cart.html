@@ -1,0 +1,155 @@
+{% extends 'store/layout.html' %}
+{% load static %}
+
+{% block title %}Basket Summary{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'css/basket/cart.css' %}">
+{% endblock style %}
+
+{% block body %}
+	<div class="container my-5 d-flex flex-column justify-content-between min-h-96">
+		<div>
+			<h1 class="h5 hstack gap-3">
+				<!-- <a href="{% url 'store:index' %}" class="link-body-emphasis text-decoration-none">
+					<img src="{% static 'img/logo/brown-logo.svg' %}" id="logo_heading" alt="Zubies Logo" width="70" height="50">
+				</a>
+				<div class="vr"></div> -->
+				Your Shopping Basket
+			</h1>
+			{% if basket|length == 0 %}
+				<p class="mb-4 text-muted">Your Basket is empty.</p>
+			{% else %}
+				{% for item in basket %}
+					{% with product=item.product %}
+						<div data-index="{{ product.key }}" class="row col-12 col-md-10 my-4 p-3 product-item m-auto rounded-4 gx-0 text-md-center">
+							{% if product.id %}
+								<!--------------- Image ----------------->
+								<div class="col-3 col-md-2 col-lg-1 order-md-first m-auto" >
+									<div style="width: 80px; height: 80px;">
+										{% if product.image %}
+										<img src="{{ product.image }}" alt="{{ product.title }} image" style="border-radius: 50%; height: 100%; width: 100%; object-fit: cover;" class="img-fluid">
+										{% else %}
+										<img src="{% static 'store\imgs\products\No_image_available.png' %}" class="card-img-top" alt="No image available">
+										{% endif %}
+									</div>
+								</div>
+								<!------------- Product Body ------------>
+								<div class="row col-8 col-md-9 col-lg-10 m-auto">
+									<a href="{{ product.get_absolute_url }}" class="text-decoration-none text-reset col-12 col-md-3 my-auto">
+										<h1 class="h5">{{ product.title }}</h1>
+									</a>
+									<div class="col-12 col-md-2 col-lg-2 m-auto">
+										{% for attribute, value in product.attributes.items %}
+										<div class="col">{{ attribute }}: <span class="ms-1">{{ value }}</span></div>
+										{% endfor %}
+									</div>
+									<div class="col-12 col-sm-5 col-md-3 col-lg-2 m-md-auto">
+										<button type="button" class="min-btn btn p-0" data-index="{{ product.key }}"><ion-icon name="remove-outline"></ion-icon></button>
+										<span class="quantity">{{ item.qty }}</span>
+										<button class="plus-btn btn p-0" type="button" data-index="{{ product.key }}"><ion-icon name="add-outline"></ion-icon></button>
+									</div>
+									<div class="col-12 col-md-3 m-md-auto">
+										{% if item.discount_price %}
+											Rs. <del style="text-decoration-color: red;">{{ item.regular_price }}</del> {{ item.discount_price }}
+										{% else %}
+											Rs. {{ item.regular_price }}
+										{% endif %}
+									</div>
+								</div>
+							{% else %}
+								<div class="col-11 text-center">Product Has Been Deleted</div>
+							{% endif %}
+							<div class="col-1 my-auto">
+								<span type="button" data-index="{{ product.key }}" class="dlt-btn"><ion-icon name="close-outline" style="font-size: 25px;"></ion-icon></span>
+							</div>
+						</div>
+					{% endwith %}
+				{% endfor %}
+			{% endif %}
+		</div>
+		<div class="col-11 text-end">
+			<div class="h6 text-muted">Sub Total: <span id="sub-total" class="ms-2">Rs. {{ basket.get_after_discount_subtotal_price }}</span></div>
+
+			<div class="d-flex flex-column flex-md-row justify-content-between mb-5">
+				<a href="{% url 'store:index' %}"class="d-flex align-items-center btn-shop h-100"><ion-icon name="chevron-back-outline" class=""></ion-icon>Continue Shopping</a>
+				{% if basket %}
+					<a href="{% url 'checkout:checkout' %}" class="btn basket">Proceed to Checkout</a>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block script %}
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+<script>
+	// Quantity Change
+	$('.plus-btn').on('click', function (e) {
+		e.preventDefault();
+		$(this).siblings('.quantity').text(parseInt($(this).siblings('.quantity').text()) + 1);
+		updateBasket($(this));
+	})
+	$('.min-btn').on('click', function (e) {
+		e.preventDefault();
+		let quantity = parseInt($(this).siblings('.quantity').text());
+		if(quantity > 1)
+		{
+			$(this).siblings('.quantity').text(quantity - 1);
+			updateBasket($(this));
+		}
+	})
+
+	// Update to basket
+	const updateBasket = function (btn) {
+		var csrfToken = "{{ csrf_token }}";
+		$.ajax({
+			type: "POST",
+			url: "{% url 'basket:basket_update' %}",
+			data: {
+				key: btn.data('index'),
+				product_qty: parseInt(btn.siblings('.quantity').text()),
+				csrfmiddlewaretoken: csrfToken,
+				action: 'update'
+			},
+			success: function (response) {
+				$('.basket-qty').text(response.qty);
+				$('#sub-total').text(`Rs. ${response.subtotal}`);
+			},
+			error: function (xhr, errmessage, err) {}
+		});
+	}
+
+	// Delete to basket
+	$(document).on('click', '.dlt-btn', function (e) {
+		e.preventDefault();
+		const item_key = $(this).data('index');
+		var csrfToken = "{{ csrf_token }}";
+		$.ajax({
+			type: "POST",
+			url: "{% url 'basket:basket_update' %}",
+			data: {
+				key: item_key,
+				csrfmiddlewaretoken: csrfToken,
+				action: 'delete'
+			},
+			success: function (response) {
+				if (response.qty == '0') {
+					$('.basket-qty').text('');
+					$('.btn.basket:nth-of-type(2)').remove();
+					$('.btn.basket:nth-of-type(1)').removeClass('filled');
+					$('.container > h1').after('<p class="mb-4 text-muted">Your Basket is empty.</p>');
+				}
+				else
+				{
+					$('.basket-qty').text(response.qty);
+				}
+				$('#sub-total').text(`Rs. ${response.subtotal}`);
+				$(`.product-item[data-index="${item_key}"]`).remove();
+			},
+			error: function (xhr, errmessage, err) {}
+		});
+	})
+</script>
+{% endblock %}
